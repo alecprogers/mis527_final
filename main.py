@@ -1,7 +1,5 @@
+import matplotlib.pyplot as plt
 import pandas as pd
-
-# Things we could add:
-#   -Data showing total births for a year, to accurately determine which name was most popular
 
 
 def main():
@@ -9,14 +7,26 @@ def main():
     df = pd.read_excel('Baby Names Dataset.xlsx')
 
     # Rename columns
-    df.columns = ['year_of_birth', 'name', 'sex', 'count']
+    df.columns = ['year', 'name', 'sex', 'count']
 
     # Add column containing number of letters in name
     df['letter_count'] = df['name'].apply(lambda x: len(x))
 
     print(df)
 
+    plot_letter_count(df)
     most_popular_name(df)
+
+
+def plot_letter_count(df):
+    word_count_df = df.groupby('year')['letter_count'].mean().to_frame(name='avg_letter_count')
+
+    plt.figure()
+    word_count_df.plot()
+    plt.title('Average Number of Letters Per Name')
+    plt.xlabel('Year')
+    plt.ylabel('Letters')
+    plt.show()
 
 
 def most_popular_name(df):
@@ -48,8 +58,9 @@ def most_popular_name(df):
     # Male name with highest count
     male_totals_df = name_count_df[name_count_df['sex'] == 'M']
     male_totals_df = male_totals_df.sort_values(['count'], ascending=False)
-    male_totals_df.index = male_totals_df['name']
-    male_totals_df = male_totals_df.drop(columns=['name', 'sex'])
+    male_totals_df = male_totals_df.reset_index()
+    male_totals_df.index = male_totals_df.index + 1
+    male_totals_df = male_totals_df.drop(columns=['index', 'sex'])
     print('Top 50 male names:')
     print(male_totals_df[:50])
 
@@ -58,8 +69,9 @@ def most_popular_name(df):
     # Female name with highest count
     female_totals_df = name_count_df[name_count_df['sex'] == 'F']
     female_totals_df = female_totals_df.sort_values(['count'], ascending=False)
-    female_totals_df.index = female_totals_df['name']
-    female_totals_df = female_totals_df.drop(columns=['name', 'sex'])
+    female_totals_df = female_totals_df.reset_index()
+    female_totals_df.index = female_totals_df.index + 1
+    female_totals_df = female_totals_df.drop(columns=['index', 'sex'])
     print('Top 50 female names:')
     print(female_totals_df[:50])
 
