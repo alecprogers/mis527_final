@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 
 
+# As it stands, this program will generate 13 graphs and console output that might be hard to decipher all together.
+# If you wish to closely examine each function, we advise that you comment out the others to focus on one at a time.
+
+
 def main():
     # Read in dataframe from Excel document
     df = pd.read_excel('Baby Names Dataset.xlsx')
@@ -55,9 +59,11 @@ def main():
     # Graphs popularity of names from pop culture with relation to major pop culture events -- Maddie
     pop_culture_name(df, "Maverick", 1986, "black")
     pop_culture_name(df, "Khaleesi", 2011, "black")
-    pop_culture_name(df, "Daphne", 1969, "black")
     pop_culture_name(df, "Lucy", 1952, "black")
+
+    # methods for "Giselle" and "Daphne" since they need markers on x-axis -- Maddie
     g_name(df)
+    d_name(df)
 
 
 # Prints a list of the 50 longest names in descending order -- Alec
@@ -556,6 +562,25 @@ def g_name(df):
     plt.xlabel("Year")
     plt.ylabel("Number of Babies")
     plt.show()
+
+
+# plots popularity of "Daphne" from 1880-2015
+# marks x axis at 1969 and 2002 to signify special events
+def d_name(df):
+    index_list = np.where(df["name"] == "Daphne")
+
+    name_df = pd.DataFrame()
+
+    for index in index_list:
+        name_df = df[["year", "count"]].iloc[index].reset_index()
+
+    plt.figure()
+    plt.plot(name_df["year"], name_df["count"], color="black")
+    plt.axvline(x=1969, color="red")
+    plt.axvline(x=2002, color="gold")
+    plt.title("Popularity of Daphne")
+    plt.xlabel("Year")
+    plt.ylabel("Number of Babies")
 
 
 main()
